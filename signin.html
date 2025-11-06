@@ -45,7 +45,10 @@
               <input type="email" id="emailInputSignin" placeholder="Email" required>
               <input type="password" id="passwordInputSignin" placeholder="Password" pattern=".*" required>
 
-              <input type="submit" value="Sign in">
+              <div style="display: flex; gap: 10px;">
+                <input type="submit" value="Sign in">
+                <button type="button" onclick="window.location.href='register.html'">Sign Up</button>
+              </div>
             </form>
         </section>
 
@@ -57,3 +60,4 @@
         <script src="js/cognito-auth.js"></script>
     </body>
 </html>
+
