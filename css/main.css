@@ -2777,7 +2777,7 @@ img {
 }
 
 .home-story {
-    background: url(../images/wr-home-about.jpg) no-repeat bottom;
+    background: url(../images/wr-home-about.png) no-repeat bottom;
     background-size: cover;
     color: #fff;
     text-align: center;
@@ -3308,6 +3308,7 @@ img {
         font-size: 1.5rem
     }
 }
+
 
 
 
