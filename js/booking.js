@@ -779,3 +779,74 @@
 
   $(boot);
 })(jQuery);
+
+// ---------- LEX CHATBOT INTEGRATION ----------
+// Place this anywhere in booking.js, preferably after your boot/init functions
+
+// ---------- LEX CHATBOT FOR GUEST USERS ----------
+(function initLexGuestBot() {
+    // Replace these placeholders with your actual values
+    const LEX_BOT_REGION = 'eu-west-2'; // e.g., 'us-east-1'
+    const IDENTITY_POOL_ID = 'eu-north-1_E2gRQ72g7'; // Cognito Identity Pool ID that allows guest access
+    const BOT_NAME = 'RideAssistantBot';
+    const BOT_ALIAS = 'Test';
+
+    // Create chat box container if not already in HTML
+    if (!document.getElementById('lexChatContainer')) {
+        const chatContainer = document.createElement('div');
+        chatContainer.id = 'lexChatContainer';
+        chatContainer.style = 'position:fixed;bottom:10px;right:10px;width:300px;height:400px;border:1px solid #ccc;background:#fff;display:flex;flex-direction:column;z-index:1000;';
+        chatContainer.innerHTML = `
+            <div id="lexMessages" style="flex:1;padding:5px;overflow-y:auto;font-size:14px;"></div>
+            <input id="lexInput" type="text" placeholder="Ask me anything..." style="border-top:1px solid #ccc;padding:5px;width:100%;box-sizing:border-box;" />
+        `;
+        document.body.appendChild(chatContainer);
+    }
+
+    const lexMessages = document.getElementById('lexMessages');
+    const lexInput = document.getElementById('lexInput');
+
+    function appendMessage(sender, message) {
+        const msgDiv = document.createElement('div');
+        msgDiv.style.marginBottom = '8px';
+        msgDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+        lexMessages.appendChild(msgDiv);
+        lexMessages.scrollTop = lexMessages.scrollHeight;
+    }
+
+    // Initialize AWS SDK for guest access
+    AWS.config.region = LEX_BOT_REGION;
+    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: IDENTITY_POOL_ID
+        // No Logins key since this is guest (unauthenticated)
+    });
+
+    const lexruntime = new AWS.LexRuntime({ region: LEX_BOT_REGION });
+
+    // Handle sending message to Lex
+    lexInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter' && lexInput.value.trim() !== '') {
+            const userMessage = lexInput.value.trim();
+            appendMessage('You', userMessage);
+            lexInput.value = '';
+
+            const params = {
+                botAlias: BOT_ALIAS,
+                botName: BOT_NAME,
+                inputText: userMessage,
+                userId: 'guest_' + Date.now(), // unique userId for session
+                sessionAttributes: {}
+            };
+
+            lexruntime.postText(params, function(err, data) {
+                if (err) {
+                    console.error(err);
+                    appendMessage('Bot', 'Sorry, something went wrong.');
+                } else {
+                    appendMessage('Bot', data.message || '...');
+                }
+            });
+        }
+    });
+
+})();
