@@ -2622,7 +2622,7 @@ img {
 
 .site-logo {
   display: block;
-  background: url(../images/wr-logo-white.png) no-repeat;
+  background: url(https://rydes-images.s3.eu-north-1.amazonaws.com/logo.png) no-repeat;
   height: 3.5rem;
   width: 15.1875rem;
   text-indent: -999em;
@@ -3377,3 +3377,4 @@ img {
     font-size: 1.5rem;
   }
 }
+
