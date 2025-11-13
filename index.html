@@ -140,6 +140,10 @@
     const BOT_NAME = 'RideAssistantBot';
     const BOT_ALIAS = 'Test';
 
+  const userId = localStorage.getItem('lexGuestUserId') || ('guest_' + Date.now());
+localStorage.setItem('lexGuestUserId', userId);
+
+
     // Create chat container
     if (!document.getElementById('lexChatContainer')) {
         const chatContainer = document.createElement('div');
@@ -217,6 +221,7 @@
 </script>
   </body>
 </html>
+
 
 
 
